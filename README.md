@@ -12,33 +12,33 @@ express，redis， sequelize
 
 登录页
 
-![](/readmeImg/1.JPG)
+![](./readmeImg/1.JPG)
 
 注册
 
-![](/readmeImg/2.JPG)
+![](./readmeImg/2.JPG)
 
 主页
 
-![](/readmeImg/3.JPG)
+![](./readmeImg/3.JPG)
 
-![](/readmeImg/4.JPG)
+![](./readmeImg/4.JPG)
 
 商品页
 
-![](/readmeImg/5.JPG)
+![](./readmeImg/5.JPG)
 
 求购信息页
 
-![](/readmeImg/6.JPG)
+![](./readmeImg/6.JPG)
 
 个人主页
 
-![](/readmeImg/个人主页.JPG)
+![](./readmeImg/个人主页.JPG)
 
 我的商品
 
-![](/readmeImg/我的商品.JPG)
+![](./readmeImg/我的商品.JPG)
 
 ## Project setup
 ```bash
