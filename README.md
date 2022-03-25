@@ -12,33 +12,33 @@ express，redis， sequelize
 
 登录页
 
-![](./readmeImg/1.JPG)
+![1.jpg](https://s2.loli.net/2022/03/25/r9mLBHSk5fvNZXg.jpg)
 
 注册
 
-![](./readmeImg/2.JPG)
+![2.jpg](https://s2.loli.net/2022/03/25/JVFQri4BGogt8vl.jpg)
 
 主页
 
-![](./readmeImg/3.JPG)
+![3.jpg](https://s2.loli.net/2022/03/25/mfiN6vP2p5Q3JzB.jpg)
 
-![](./readmeImg/4.JPG)
+![4.jpg](https://s2.loli.net/2022/03/25/xIRwml3Sq6KsAig.jpg)
 
 商品页
 
-![](./readmeImg/5.JPG)
+![5.jpg](https://s2.loli.net/2022/03/25/hxKqVGreAkCdDFg.jpg)
 
 求购信息页
 
-![](./readmeImg/6.JPG)
+![6.jpg](https://s2.loli.net/2022/03/25/2tleGXFSijrvUZb.jpg)
 
 个人主页
 
-![](./readmeImg/个人主页.JPG)
+![个人主页.jpg](https://s2.loli.net/2022/03/25/FsOyXVkAhfb4ZrI.jpg)
 
 我的商品
 
-![](./readmeImg/我的商品.JPG)
+![我的商品.jpg](https://s2.loli.net/2022/03/25/NwthUfmIHTRBiXO.jpg)
 
 ## Project setup
 ```bash
