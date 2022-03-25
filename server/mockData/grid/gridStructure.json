@@ -1,0 +1,39 @@
+
+[
+    {
+        "name":"name",
+        "width":200,
+        "label":"姓名"
+    },
+    {
+        "name":"age",
+        "width":200,
+        "label":"年龄"
+    },{
+        "name":"startDate",
+        "width":200,
+        "type":"date",
+        "label":"入学日期"
+    },{
+        "name":"endDate",
+        "width":200,
+        "type":"date",
+        "label":"毕业日期"
+    },{
+        "name":"sex",
+        "width":200,
+        "type":"enum",
+        "store":[{
+            "codename":"男",
+            "codevalue":"1"
+        },{
+            "codename":"女",
+            "codevalue":"2"
+        }],
+        "label":"性别"
+    },{
+        "name":"description",
+        "width":200,
+        "label":"描述信息"
+    }
+]

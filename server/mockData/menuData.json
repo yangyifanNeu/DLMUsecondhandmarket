@@ -1,0 +1,117 @@
+[
+  {
+    "path": "/form",
+    "id": "form",
+    "icon": "form",
+    "label": "表单",
+    "component": "Basiclayout",
+    "children": [
+      {
+        "path": "/form/basicForm",
+        "id": "basicForm",
+        "icon": "form",
+        "component": "/form/BasicForm.vue",
+        "label": "基本表单"
+      },
+      {
+        "path": "/form/validateForm",
+        "component": "/form/ValidateForm.vue",
+        "icon": "form",
+        "label": "校验表单",
+        "id": "ValidateForm"
+      }
+    ]
+  },
+  {
+    "path": "/dashboard",
+    "component": "Basiclayout",
+    "id": "dashboard",
+    "label": "仪表盘",
+    "icon": "dashboard",
+    "children": [
+      {
+        "path": "/dashboard/analyze",
+        "id": "analyze",
+        "component": "/dashboard/analyze",
+        "label": "分析页"
+      }
+    ]
+  },
+  {
+    "path": "/grid",
+    "component": "Basiclayout",
+    "id": "grid",
+    "label": "表格",
+    "icon": "table",
+    "children": [
+      {
+        "path": "/grid/dynamicGrid",
+        "id": "dynamicGrid",
+        "component": "/grid/dynamicGrid",
+        "label": "动态表格",
+        "icon": "table"
+      },
+      {
+        "path": "/grid/exportGrid",
+        "id": "exportGrid",
+        "component": "/grid/exportGrid",
+        "label": "表格导出（前端）",
+        "icon": "table"
+      },
+      {
+        "path": "/grid/importGrid",
+        "id": "importGrid",
+        "component": "/grid/importGrid",
+        "label": "表格导入",
+        "icon": "table"
+      }
+    ]
+  },
+  {
+    "path": "/chart",
+    "component": "Basiclayout",
+    "id": "chart",
+    "label": "图表",
+    "children": [
+      {
+        "path": "/chart/basicChart",
+        "id": "basicChart",
+        "component": "/chart/basicChart",
+        "label": "基本图表"
+      },{
+        "path": "/chart/dynamicChart",
+        "id": "dynamicChart",
+        "component": "/others/socket",
+        "label": "动态图表"
+      }
+    ]
+  },
+  {
+    "path": "/richEditor",
+    "component": "Basiclayout",
+    "id": "richEditor",
+    "label": "富文本编辑器",
+    "children": [
+      {
+        "path": "/richEditor/tiptap",
+        "id": "tiptap",
+        "component": "/richEditor/tiptap",
+        "label": "tiptap"
+      }
+    ]
+  },
+  {
+    "path": "/others",
+    "component": "Basiclayout",
+    "id": "others",
+    "label": "其他",
+    "children": [
+      {
+        "path": "/others/socket",
+        "id": "socket",
+        "component": "/others/socket",
+        "label": "socket"
+      }
+    ]
+  }
+]

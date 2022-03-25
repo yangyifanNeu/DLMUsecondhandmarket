@@ -1,0 +1,29 @@
+{
+  "name": "myapp",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "model": "node_modules/.bin/sequelize-auto -o './model/generateModel' -d school_second_hand_market -h localhost -u root -p 3306 -x root -e mysql "
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "connect-redis": "^6.0.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "express-async-errors": "^3.1.1",
+    "express-session": "^1.17.2",
+    "express-ws": "^4.0.0",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "mysql2": "^2.3.3",
+    "node-schedule": "^2.1.0",
+    "nodemailer": "^6.7.2",
+    "pug": "2.0.0-beta11",
+    "redis": "^3.1.2",
+    "sequelize": "^6.13.0",
+    "sequelize-auto": "^0.8.8",
+    "socket.io": "^2.3.0"
+  }
+}
