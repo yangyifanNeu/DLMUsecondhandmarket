@@ -24,7 +24,6 @@
         <router-view></router-view>
       </div>
     </a-layout-content>
-    <a-layout-footer style="text-align: center"> Ant Design ©2018 Created by Ant UED </a-layout-footer>
   </a-layout>
 </template>
 <script>
@@ -45,7 +44,9 @@ export default {
       } else if (key == '2') {
         this.$router.push({path: '/common/taoershou'});
       } else if (key == '3') {
-        this.$router.push({path: '/common/xuanshangbang'});
+        this.$router.push({path: '/common/wants'});
+      } else if (key == '4') {
+        this.$router.push({path: '/common/personCenter'});
       }
     },
     refreshMenu() {
@@ -54,8 +55,10 @@ export default {
         this.selectedKeys = ['1'];
       } else if (path == '/common/taoershou') {
         this.selectedKeys = ['2'];
-      } else {
-        this.selectedKeys = [];
+      } else if (path == '/common/wants') {
+        this.selectedKeys = ['3'];
+      } else if (path.indexOf('/common/personCenter') == 0) {
+        this.selectedKeys = ['4'];
       }
     },
   },

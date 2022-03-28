@@ -6,6 +6,7 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import axios from './util/rest';
 Vue.config.productionTip = false;
 import {Icon} from 'ant-design-vue';
 const IconFont = Icon.createFromIconfontCN({
@@ -14,6 +15,7 @@ const IconFont = Icon.createFromIconfontCN({
 Vue.use(ElementUI);
 Vue.use(Antd);
 Vue.component('IconFont', IconFont);
+Vue.prototype.$http = axios;
 new Vue({
   router,
   store,

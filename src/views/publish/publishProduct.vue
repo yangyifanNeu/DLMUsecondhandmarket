@@ -8,16 +8,17 @@
         <a-upload
           name="avatar"
           list-type="picture-card"
-          class="avatar-uploader"
-          :show-upload-list="false"
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          :file-list="fileList"
+          :remove="handleRemove"
           :before-upload="beforeUpload"
+          :show-upload-list="false"
+          class="avatar-uploader"
           @change="handleChange"
         >
-          <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
+          <img v-if="imageUrl" :src="imageUrl" alt="avatar" class="avatar-uploader-img" />
           <div v-else>
             <a-icon :type="loading ? 'loading' : 'plus'" />
-            <div class="ant-upload-text">Upload</div>
+            <div class="ant-upload-text">商品封面</div>
           </div>
         </a-upload>
       </a-col>
@@ -27,15 +28,10 @@
             <p class="form-label-dlmu">商品类别:</p>
           </a-col>
           <a-col :span="16" class="widget-col">
-            <a-select style="width: 150px" @change="handleChange">
-              <a-select-option value="1"> 书籍文具 </a-select-option>
-              <a-select-option value="2"> 电子产品 </a-select-option>
-              <a-select-option value="3"> 服装配饰 </a-select-option>
-              <a-select-option value="4"> 宿舍家具 </a-select-option>
-              <a-select-option value="5"> 医药保健 </a-select-option>
-              <a-select-option value="6"> 美妆护理 </a-select-option>
-              <a-select-option value="7"> 零食 </a-select-option>
-              <a-select-option value="8"> 其他 </a-select-option>
+            <a-select style="width: 150px" v-model="product.category">
+              <a-select-option :value="item.id" v-for="item in categoryList" :key="item.id">
+                {{ item.name }}
+              </a-select-option>
             </a-select>
           </a-col>
         </a-row>
@@ -46,11 +42,10 @@
             <p class="form-label-dlmu">成色:</p>
           </a-col>
           <a-col :span="16" class="widget-col">
-            <a-select style="width: 150px" @change="handleChange">
-              <a-select-option value="1"> 全新未拆封 </a-select-option>
-              <a-select-option value="2"> 几乎全新 </a-select-option>
-              <a-select-option value="3"> 轻微痕迹 </a-select-option>
-              <a-select-option value="4"> 明显痕迹 </a-select-option>
+            <a-select style="width: 150px" v-model="product.condition">
+              <a-select-option :value="item.codevalue" v-for="item in productConditionList" :key="item.id">
+                {{ item.codename }}
+              </a-select-option>
             </a-select>
           </a-col>
         </a-row>
@@ -61,22 +56,31 @@
             <p class="form-label-dlmu">购买渠道:</p>
           </a-col>
           <a-col :span="16" class="widget-col">
-            <a-select style="width: 150px" @change="handleChange">
-              <a-select-option value="1"> 品牌专柜 </a-select-option>
-              <a-select-option value="2"> 网购 </a-select-option>
-              <a-select-option value="3"> 其他 </a-select-option>
+            <a-select style="width: 150px" v-model="product.buyingway">
+              <a-select-option :value="item.codevalue" v-for="item in buyingWayList" :key="item.id">
+                {{ item.codename }}
+              </a-select-option>
             </a-select>
           </a-col>
         </a-row>
       </a-col>
-
+      <a-col :span="6">
+        <a-row>
+          <a-col :span="8" class="label-col">
+            <p class="form-label-dlmu">商品名:</p>
+          </a-col>
+          <a-col :span="16" class="widget-col">
+            <a-input style="width: 150px" v-model="product.name" />
+          </a-col>
+        </a-row>
+      </a-col>
       <a-col :span="6">
         <a-row>
           <a-col :span="8" class="label-col">
             <p class="form-label-dlmu">原价:</p>
           </a-col>
           <a-col :span="16" class="widget-col">
-            <a-input prefix="￥" suffix="RMB" style="width: 150px" />
+            <a-input prefix="￥" suffix="RMB" style="width: 150px" v-model="product.originalprice" />
           </a-col>
         </a-row>
       </a-col>
@@ -86,7 +90,21 @@
             <p class="form-label-dlmu">现价:</p>
           </a-col>
           <a-col :span="16" class="widget-col">
-            <a-input prefix="￥" suffix="RMB" style="width: 150px" />
+            <a-input prefix="￥" suffix="RMB" style="width: 150px" v-model="product.currentprice" />
+          </a-col>
+        </a-row>
+      </a-col>
+      <a-col :span="18">
+        <a-row>
+          <a-col :span="4" class="label-col" style="width: 11%">
+            <p class="form-label-dlmu">商品标签:</p>
+          </a-col>
+          <a-col :span="20" class="widget-col">
+            <a-select mode="multiple" placeholder="请选择标签" style="width: 100%" v-model="product.tags">
+              <a-select-option v-for="item in tags" :key="item.id" :value="item.id">
+                {{ item.name }}
+              </a-select-option>
+            </a-select>
           </a-col>
         </a-row>
       </a-col>
@@ -96,7 +114,14 @@
             <p class="form-label-dlmu">商品描述:</p>
           </a-col>
           <a-col :span="20" class="widget-col">
-            <a-textarea placeholder="商品描述" />
+            <a-textarea placeholder="商品描述" v-model="product.description" />
+          </a-col>
+        </a-row>
+      </a-col>
+      <a-col :span="18">
+        <a-row>
+          <a-col :span="24" class="widget-col publishbtn-col">
+            <a-button type="primary" @click="publishProduct">发布</a-button>
           </a-col>
         </a-row>
       </a-col>
@@ -115,21 +140,30 @@ export default {
     return {
       loading: false,
       imageUrl: '',
+      fileList: [],
+      categoryList: [],
+      productConditionList: [],
+      buyingWayList: [],
+      tags: [],
+      product: {
+        category: null,
+        condition: null,
+        name: null,
+        description: null,
+        originalprice: null,
+        currentprice: null,
+        buyingway: null,
+        tags: [],
+      },
     };
   },
   methods: {
     handleChange(info) {
-      if (info.file.status === 'uploading') {
-        this.loading = true;
-        return;
-      }
-      if (info.file.status === 'done') {
-        // Get this url from response in real world.
-        getBase64(info.file.originFileObj, (imageUrl) => {
-          this.imageUrl = imageUrl;
-          this.loading = false;
-        });
-      }
+      // Get this url from response in real world.
+      getBase64(info.file, (imageUrl) => {
+        this.imageUrl = imageUrl;
+        this.loading = false;
+      });
     },
     beforeUpload(file) {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -140,13 +174,105 @@ export default {
       if (!isLt2M) {
         this.$message.error('Image must smaller than 2MB!');
       }
-      return isJpgOrPng && isLt2M;
+      return false;
     },
-    methods: {
-      handleChange(value) {
-        console.log(`selected ${value}`);
+    handleRemove(file) {
+      const index = this.fileList.indexOf(file);
+      const newFileList = this.fileList.slice();
+      newFileList.splice(index, 1);
+      this.fileList = newFileList;
+    },
+    emptyProductInfo() {
+      let product = this.product;
+      for (const key in product) {
+        if (Object.hasOwnProperty.call(product, key)) {
+          product[key] = null;
+        }
+      }
+      this.imageUrl = null;
+    },
+    publishProduct() {
+      var $this = this;
+      this.$confirm({
+        title: '确定发布商品?',
+        // content: '清空存储卡?',
+        okText: '确认',
+        cancelText: '取消',
+        onOk() {
+          let data = Object.assign({}, $this.product, {img: $this.imageUrl});
+          $this
+            .$http({
+              method: 'post',
+              url: '/product/createProucts',
+              data: data,
+              headers: {
+                'Content-type': 'application/json;charset=utf-8',
+              },
+              withCredentials: true,
+            })
+            .then(function (res) {
+              console.log(res.data);
+              $this.$notification['success']({
+                message: '消息',
+                description: '发布商品成功！',
+              });
+              $this.emptyProductInfo();
+            });
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+      });
+    },
+  },
+  mounted() {
+    var $this = this;
+    this.$http({
+      method: 'get',
+      url: '/category/getCategory',
+      headers: {
+        'Content-type': 'application/json;charset=utf-8',
       },
-    },
+      withCredentials: true,
+    }).then(function (result) {
+      $this.categoryList = result.data;
+    });
+    this.$http({
+      method: 'get',
+      url: '/codelist/getCodelist',
+      params: {name: 'condition'},
+      headers: {
+        'Content-type': 'application/json;charset=utf-8',
+      },
+      withCredentials: true,
+    }).then(function (result) {
+      $this.productConditionList = result.data;
+    });
+    this.$http({
+      method: 'get',
+      url: '/codelist/getCodelist',
+      params: {name: 'buyingway'},
+      headers: {
+        'Content-type': 'application/json;charset=utf-8',
+      },
+      withCredentials: true,
+    }).then(function (result) {
+      $this.buyingWayList = result.data;
+    });
+    var $this = this;
+    this.$http({
+      method: 'get',
+      url: '/tag/allTags',
+      headers: {
+        'Content-type': 'application/json;charset=utf-8',
+      },
+      withCredentials: true,
+    }).then(function (result) {
+      $this.tags = result.data.map((item) => {
+        item.label = item.name;
+        return item;
+      });
+    });
   },
 };
 </script>
@@ -154,6 +280,10 @@ export default {
 .avatar-uploader > .ant-upload {
   width: 300px;
   height: 300px;
+}
+.avatar-uploader-img {
+  width: 280px;
+  height: 280px;
 }
 .ant-upload-select-picture-card i {
   font-size: 32px;
@@ -171,6 +301,8 @@ export default {
   padding-bottom: 10px;
   margin-top: 20px;
   padding-left: 25px;
+  min-height: calc(100vh - 120px);
+  margin-bottom: 20px;
   .title {
     text-align: center;
     font-size: 30px;
@@ -193,6 +325,10 @@ export default {
   }
   .widget-col {
     text-align: left;
+  }
+  .publishbtn-col {
+    text-align: center;
+    margin-top: 5px;
   }
 }
 </style>

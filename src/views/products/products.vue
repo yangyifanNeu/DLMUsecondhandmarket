@@ -8,10 +8,10 @@
             ><a-tag
               color="#1890ff"
               v-for="item in selectedProductMenu"
-              :key="item.name"
+              :key="item.id"
               closable
               @close="closeTag(item)"
-              >{{ item.label }}</a-tag
+              >{{ item.name }}</a-tag
             >
             <a-input-search
               placeholder="在当前分类下搜索"
@@ -22,8 +22,11 @@
             <a-button type="primary" @click="searchClick" class="search-btn">搜索</a-button>
           </a-form-item>
           <a-form-item label="分类"
-            ><a-checkable-tag v-for="item in productMenu" :key="item.name" v-model="item.selected" color="blue"
-              ><icon-font :type="item.icon" style="margin-right: 3px" />{{ item.label }}</a-checkable-tag
+            ><a-checkable-tag v-for="item in productMenu" :key="item.id" v-model="item.selected" color="blue"
+              ><icon-font :type="item.icon" style="margin-right: 3px" v-if="item.icon.indexOf('icon') == 0" /><a-icon
+                v-else
+                type="item.icon"
+              />{{ item.name }}</a-checkable-tag
             >
           </a-form-item>
           <a-form-item label="热词"
@@ -43,9 +46,9 @@
         </a-form>
       </a-row>
     </div>
-    <a-row class="product-container">
-      <a-col :span="6" v-for="item in productList" :key="item.id">
-        <a-card hoverable style="width: 240px; margin-bottom: 20px">
+    <a-row class="product-container" v-if="!loading">
+      <a-col :span="6" v-for="item in filterProduct" :key="item.id">
+        <a-card hoverable style="width: 240px; margin-bottom: 20px" @click="productDetail(item)">
           <img slot="cover" alt="example" :src="item.img" style="height: 240px" />
           <a-card-meta>
             <template slot="description" class="product-detail"> {{ item.description }}</template>
@@ -57,6 +60,20 @@
             </template>
           </a-card-meta>
         </a-card>
+      </a-col>
+    </a-row>
+    <a-row class="product-container" v-if="loading">
+      <a-col :span="6" :gutter="15">
+        <a-skeleton />
+      </a-col>
+      <a-col :span="6" :gutter="15">
+        <a-skeleton />
+      </a-col>
+      <a-col :span="6" :gutter="15">
+        <a-skeleton />
+      </a-col>
+      <a-col :span="6" :gutter="15">
+        <a-skeleton />
       </a-col>
     </a-row>
     <div id="components-back-top-demo-custom">
@@ -179,438 +196,23 @@ const productMenu = [
     selected: false,
   },
 ];
-const electronItems = [
-  {
-    id: 1,
-    name: '富士X-T30II微单',
-    description: '八成新保修期2年',
-    price: '6100',
-    img: '/img/products/electronic/camera.png',
-  },
-  {
-    id: 2,
-    name: 'kindle电子书',
-    description: '九成新看书很方便',
-    price: '545',
-    img: '/img/products/electronic/elecbook.jpg',
-  },
-  {
-    id: 3,
-    name: '佳能200d二代',
-    description: '文艺女生必备',
-    price: '4780',
-    img: '/img/products/electronic/camera1.jpg',
-  },
-  {
-    id: 4,
-    name: 'iPad Air4',
-    description: '天蓝色，64G，九成新',
-    price: '5600',
-    img: '/img/products/electronic/ipad.jpg',
-  },
-
-  {
-    id: 5,
-    name: 'iPhone13 Pro',
-    description: '远峰蓝，128G全新未拆封',
-    price: '7500',
-    img: '/img/products/electronic/iphone13.jpg',
-  },
-  {
-    id: 6,
-    name: 'MacBook Pro',
-    description: '13英寸M1芯片',
-    price: '10580',
-    img: '/img/products/electronic/mac.jpg',
-  },
-  {
-    id: 7,
-    name: 'Apple Watch SE',
-    description: '用过一个月无磨损！',
-    price: '2499',
-    img: '/img/products/electronic/watch.jpg',
-  },
-  {
-    id: 8,
-    name: '富士SQ1拍立得',
-    description: '氛围感十足送一盒相纸',
-    price: '750',
-    img: '/img/products/electronic/weidan.jpg',
-  },
-];
-const bookItems = [
-  {
-    id: 1,
-    name: '读者',
-    description: '2010-22期 有轻微折痕',
-    price: '5',
-    img: '/img/products/book/1.jpg',
-  },
-  {
-    id: 2,
-    name: '血战长津湖',
-    description: '4.2折 现代出版社 无污渍',
-    price: '21.80',
-    img: '/img/products/book/2.jpg',
-  },
-  {
-    id: 3,
-    name: '读法必备',
-    description: '3.5折 有划线 ',
-    price: '14.00',
-    img: '/img/products/book/3.jpg',
-  },
-  {
-    id: 4,
-    name: '高等数学习题',
-    description: '沈阳出版社 有划痕、折页',
-    price: '13.70',
-    img: '/img/products/book/4.jpg',
-  },
-
-  {
-    id: 5,
-    name: '绝叫',
-    description: '全新 未拆封 可小刀',
-    price: '58.00',
-    img: '/img/products/book/5.jpg',
-  },
-  {
-    id: 6,
-    name: '岛上书店',
-    description: '2.9折 江苏凤凰文艺出版社',
-    price: '10.10',
-    img: '/img/products/book/6.jpg',
-  },
-  {
-    id: 7,
-    name: '高校导读书目',
-    description: '1-5全套 有轻微折痕 磨铁',
-    price: '93.50',
-    img: '/img/products/book/7.jpg',
-  },
-  {
-    id: 8,
-    name: '明朝那些事儿',
-    description: '中国友谊出版公司 轻度污渍',
-    price: '9.20',
-    img: '/img/products/book/8.jpg',
-  },
-];
-const clothesItems = [
-  {
-    id: 1,
-    name: '圣诞毛衣',
-    description: '未下水，仅上身一次，9成新',
-    price: '78',
-    img: '/img/products/clothes/1.jpg',
-  },
-  {
-    id: 2,
-    name: '毛绒帽子',
-    description: '冬天必备！全新工厂代工',
-    price: '28.8',
-    img: '/img/products/clothes/2.jpg',
-  },
-  {
-    id: 3,
-    name: '灰色阔腿裤',
-    description: '面有一点起球，仅穿过两次',
-    price: '58',
-    img: '/img/products/clothes/3.jpg',
-  },
-  {
-    id: 4,
-    name: 'nerdy运动套装',
-    description: '韩国免税店购入，八折出',
-    price: '763',
-    img: '/img/products/clothes/4.jpg',
-  },
-
-  {
-    id: 5,
-    name: '运动卫衣外套',
-    description: '新旧程度如图，不议价',
-    price: '216',
-    img: '/img/products/clothes/5.jpg',
-  },
-  {
-    id: 6,
-    name: '白色马海毛围巾',
-    description: '朋友送的，围巾太多了',
-    price: '49.9',
-    img: '/img/products/clothes/6.jpg',
-  },
-  {
-    id: 7,
-    name: 'alloy彩带包',
-    description: '去年入手，几乎全新',
-    price: '2160',
-    img: '/img/products/clothes/7.jpg',
-  },
-  {
-    id: 8,
-    name: 'ae经典卫衣',
-    description: '最显白的单品！',
-    price: '1440',
-    img: '/img/products/clothes/8.jpg',
-  },
-];
-const eatingItems = [
-  {
-    id: 1,
-    name: '蓝莓味燕麦片',
-    description: '早八营养早餐首选',
-    price: '80',
-    img: '/img/products/eating/1.jpg',
-  },
-  {
-    id: 2,
-    name: '芝士味饼干',
-    description: '芝士浓郁口感极佳',
-    price: '125',
-    img: '/img/products/eating/2.jpg',
-  },
-  {
-    id: 3,
-    name: '乳酪小蛋糕',
-    description: '口感细腻保质期一年',
-    price: '45',
-    img: '/img/products/eating/3.jpg',
-  },
-  {
-    id: 4,
-    name: '巧克力夹心曲奇',
-    description: '巧克力浓郁倍感丝滑',
-    price: '55',
-    img: '/img/products/eating/4.jpg',
-  },
-
-  {
-    id: 5,
-    name: '好利来oreo蛋糕',
-    description: '未拆封全新出',
-    price: '88',
-    img: '/img/products/eating/5.jpg',
-  },
-  {
-    id: 6,
-    name: '乐事四味薯片',
-    description: '家庭宿舍版一次性畅享',
-    price: '65',
-    img: '/img/products/eating/6.jpg',
-  },
-  {
-    id: 7,
-    name: '布朗尼饼干',
-    description: '颜值口感都很棒！',
-    price: '70',
-    img: '/img/products/eating/7.jpg',
-  },
-  {
-    id: 8,
-    name: '趣多多爆逗曲奇',
-    description: '爆浆又酥脆',
-    price: '25',
-    img: '/img/products/eating/8.jpg',
-  },
-];
-const beautyItems = [
-  {
-    id: 1,
-    name: 'ysl粉气垫',
-    description: '轻薄不脱妆越夜越美丽',
-    price: '260',
-    img: '/img/products/beauty/1.jpg',
-  },
-  {
-    id: 2,
-    name: 'ysl粉底液',
-    description: '色号买错了 只用过一次',
-    price: '330',
-    img: '/img/products/beauty/2.jpg',
-  },
-  {
-    id: 3,
-    name: 'kiko口红',
-    description: '百搭色号不出错',
-    price: '60',
-    img: '/img/products/beauty/3.jpg',
-  },
-  {
-    id: 4,
-    name: '雅诗兰黛眼霜',
-    description: '全新未拆封原价出',
-    price: '360',
-    img: '/img/products/beauty/4.jpg',
-  },
-
-  {
-    id: 5,
-    name: 'cpb隔离',
-    description: '保湿不粘腻 跟黑头痘痘说拜拜',
-    price: '120',
-    img: '/img/products/beauty/5.jpg',
-  },
-  {
-    id: 6,
-    name: 'mac生姜高光',
-    description: '粉质细腻上妆自然',
-    price: '235',
-    img: '/img/products/beauty/6.jpg',
-  },
-  {
-    id: 7,
-    name: '3ce眼影盘',
-    description: '全哑光奶茶盘 裸妆必备',
-    price: '210',
-    img: '/img/products/beauty/7.jpg',
-  },
-  {
-    id: 8,
-    name: 'nars遮瑕',
-    description: '遮瑕力超强',
-    price: '350',
-    img: '/img/products/beauty/8.jpg',
-  },
-];
-const furnitureItems = [
-  {
-    id: 1,
-    name: '脏衣篓',
-    description: '脏衣服没处放？一整个消灭掉',
-    price: '45',
-    img: '/img/products/furniture/1.jpg',
-  },
-  {
-    id: 2,
-    name: '零食小推车',
-    description: '几乎全新 占地小易取放',
-    price: '135',
-    img: '/img/products/furniture/2.jpg',
-  },
-  {
-    id: 3,
-    name: '常亮小夜灯',
-    description: '微瑕 熬夜赶ddl必备',
-    price: '65',
-    img: '/img/products/furniture/3.jpg',
-  },
-  {
-    id: 4,
-    name: '清洁洗菜盆',
-    description: '宿舍方便洗菜盛装',
-    price: '13',
-    img: '/img/products/furniture/4.jpg',
-  },
-
-  {
-    id: 5,
-    name: '吹风机固定器',
-    description: '全新 女生宿舍收纳',
-    price: '40',
-    img: '/img/products/furniture/5.jpg',
-  },
-  {
-    id: 6,
-    name: '首饰收纳盒',
-    description: '耳钉戒指再也不会丢啦',
-    price: '26',
-    img: '/img/products/furniture/6.jpg',
-  },
-  {
-    id: 7,
-    name: '抽屉收纳盒',
-    description: '一开抽屉马上找到！',
-    price: '70',
-    img: '/img/products/furniture/7.jpg',
-  },
-  {
-    id: 8,
-    name: '桌面收纳利器',
-    description: '微瑕 ins风',
-    price: '45',
-    img: '/img/products/furniture/8.jpg',
-  },
-];
-const elseItems = [
-  {
-    id: 1,
-    name: '芝麻街时钟',
-    description: '滴滴滴早八不迟到！',
-    price: '75',
-    img: '/img/products/else/1.jpg',
-  },
-  {
-    id: 2,
-    name: '泡泡玛特相框',
-    description: '几乎全新 限量版发售',
-    price: '330',
-    img: '/img/products/else/2.jpg',
-  },
-  {
-    id: 3,
-    name: 'iPad Pro 保护壳',
-    description: '未拆封 从此爱不释手',
-    price: '58',
-    img: '/img/products/else/3.jpg',
-  },
-  {
-    id: 4,
-    name: 'ins风桌面小盆栽',
-    description: '桌面的一抹绿色',
-    price: '34',
-    img: '/img/products/else/4.jpg',
-  },
-
-  {
-    id: 5,
-    name: '星黛露可爱装饰',
-    description: '全新 营造温馨宿舍',
-    price: '260',
-    img: '/img/products/else/5.jpg',
-  },
-  {
-    id: 6,
-    name: '极简手账本',
-    description: '用笔记录美好生活',
-    price: '88',
-    img: '/img/products/else/6.jpg',
-  },
-  {
-    id: 7,
-    name: '急用医药箱',
-    description: '全新 小体积大用处！',
-    price: '100',
-    img: '/img/products/else/7.jpg',
-  },
-  {
-    id: 8,
-    name: '速热卷发棒',
-    description: '轻松当自己的Tony老师',
-    price: '180',
-    img: '/img/products/else/8.jpg',
-  },
-];
-const productList = [].concat(electronItems, bookItems, clothesItems, eatingItems, furnitureItems, beautyItems, elseItems);
-productList.forEach((item, index) => {
-  item.id = index + '';
-});
 
 export default {
   data() {
     return {
       searchValue: null,
-      productMenu,
-      hotWords,
-      productList,
+      productMenu: [],
+      hotWords: [],
+      productList: [],
       priceLow: null,
       priceHigh: null,
+      filterWords: null,
+      loading: false,
     };
   },
   methods: {
     onSearch(value) {
-      console.log(value);
+      this.getProductsByCondition();
     },
     searchClick() {
       this.onSearch(this.searchValue);
@@ -621,6 +223,93 @@ export default {
           item.selected = false;
         }
       });
+    },
+    getProductsByCondition() {
+      this.loading = true;
+      let $this = this;
+      let condition = {price: [this.priceLow, this.priceHigh]};
+      if (this.searchValue) {
+        condition.keyWords = this.searchValue;
+      }
+      if (this.selectedProductMenu.length > 0) {
+        condition.category = this.selectedProductMenu.map((item) => item.id);
+      }
+      if (this.selectedHotWords.length > 0) {
+        condition.hotWords = this.selectedHotWords;
+      }
+      this.$http({
+        method: 'post',
+        url: '/product/getProductsByCondition',
+        data: condition,
+        headers: {
+          'Content-type': 'application/json;charset=utf-8',
+        },
+        withCredentials: true,
+      })
+        .then(function (result) {
+          let data = result.data;
+          for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            element.price = Number(element.currentprice);
+            if (element.category !== '1') {
+              element.price = element.price.toFixed(0);
+            }
+          }
+          $this.productList = data;
+        })
+        .finally(() => {
+          $this.loading = false;
+        });
+    },
+    getCategory() {
+      let r;
+      let p = new Promise((resolve) => {
+        r = resolve;
+      });
+      var $this = this;
+      this.$http({
+        method: 'get',
+        url: '/category/getCategory',
+        headers: {
+          'Content-type': 'application/json;charset=utf-8',
+        },
+        withCredentials: true,
+      }).then(function (result) {
+        let category;
+        if ($this.$route.query) {
+          category = $this.$route.query.category;
+        }
+        $this.productMenu = result.data.map((item) => {
+          if (category && item.id == category) {
+            item.selected = true;
+          } else {
+            item.selected = false;
+          }
+          return item;
+        });
+        r();
+      });
+      return p;
+    },
+    getTags() {
+      var $this = this;
+      this.$http({
+        method: 'get',
+        url: '/tag/allTags',
+        headers: {
+          'Content-type': 'application/json;charset=utf-8',
+        },
+        withCredentials: true,
+      }).then(function (result) {
+        $this.hotWords = result.data.map((item) => {
+          item.label = item.name;
+          return item;
+        });
+      });
+    },
+    productDetail(product) {
+      this.$store.commit('refreshCurrentProduct', product);
+      this.$router.push({name: 'productItem'});
     },
   },
   computed: {
@@ -639,7 +328,36 @@ export default {
       });
       return selectedProductMenu;
     },
+    filterProduct() {
+      let category = this.selectedProductMenu.map((item) => {
+        return item.id;
+      });
+      if (category.length == 0) {
+        return this.productList;
+      }
+      let filtedProducts = this.productList.filter((item) => {
+        if (category.includes(item.pcategories[0]['id'])) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      return filtedProducts;
+    },
+    selectedHotWords() {
+      let data = this.hotWords.filter((item) => item.selected);
+      let result = data.map((item) => item.id);
+      return result;
+    },
   },
+  beforeMount() {
+    if (this.$route.query && this.$route.query.text) {
+      this.searchValue = this.$route.query.text;
+    }
+    this.getCategory().then(() => this.getProductsByCondition());
+    this.getTags();
+  },
+  mounted() {},
 };
 </script>
 
@@ -668,7 +386,9 @@ export default {
     padding-left: 54px;
     padding-top: 26px;
     margin-top: 20px;
+    margin-bottom: 15px;
     background: #ffffff;
+    min-height: 300px;
   }
   .ant-tag {
     cursor: pointer;
