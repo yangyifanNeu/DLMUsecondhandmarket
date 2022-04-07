@@ -60,20 +60,43 @@ npm install
 
 ### Compiles and hot-reloads for development
 
-```
+```bash
 启动前端代码
 npm run serve
+启动后端代码(另外打开一个命令行工具)
+cd server
+npm run start
 ```
 
 ### Compiles and minifies for production
-```
+```bash
 前端代码构建
 npm run build
 ```
 
 ### Lints and fixes files
-```
+```bash
 npm run lint
 ```
 
+### 数据库及相关配置
+
+```javascript
+//db.js
+//redis配置
+REDIS_CONF = {
+  port: 6379,
+  host: "127.0.0.1",
+};
+//mysql配置
+MYSQL_CONF = {
+  database: "school_second_hand_market",
+  username: "root",
+  password: "root",
+  host: "localhost",
+  port: 3306,
+};
+//mysql脚本位置  server/school_second_hand_market.sql
+
+```
 
